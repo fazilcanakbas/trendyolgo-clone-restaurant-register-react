@@ -40,11 +40,11 @@ const RestaurantForm = () => {
     };
 
     try {
-      const response = await axios.post('http://192.168.116.88:5000/api/restaurants', newRestaurant);
+      const response = await axios.post('http://192.168.102.88:5000/api/restaurants', newRestaurant);
       setMessage(response.data.message);
       console.log('Restoran kaydedildi:', response.data);
 
-      // Formu sıfırla
+
       setRestaurantName('');
       setCategory('');
       setPrice('');
@@ -55,7 +55,7 @@ const RestaurantForm = () => {
       setWorkingHours('');
       setProducts([{ name: '', categoryname: '', price: '', description: '', image: '' }]);
 
-      // Restoranları güncelle
+
       fetchRestaurants();
     } catch (error) {
       setMessage('Restoran kaydedilemedi!');
@@ -65,10 +65,9 @@ const RestaurantForm = () => {
     }
   };
 
-  // Restoranları API'den al
   const fetchRestaurants = async () => {
     try {
-      const response = await axios.get('http://192.168.116.88:5000/api/restaurants');
+      const response = await axios.get('http://192.168.102.88:5000/api/restaurants');
       setRestaurants(response.data);
     } catch (error) {
       console.error('Restoranlar alınamadı:', error);
@@ -89,12 +88,11 @@ const RestaurantForm = () => {
 
   const handleDeleteRestaurant = async (_id: ObjectId) => {
     try {
-      // API'ye doğru id'yi gönderiyoruz
-      const response = await axios.delete(`http://192.168.116.88:5000/api/restaurants/${_id}`);
+      console.log("Silinecek restoran ID:", _id);
+      const response = await axios.delete(`http://192.168.102.88:5000/api/restaurants/${_id}`);
       console.log('Restoran silindi:', response.data);
       setMessage("Restoran başarıyla silindi");
-      // Silme işlemi sonrası listeyi yeniden alabilir veya güncelleyebilirsiniz
-      fetchRestaurants();  // Listeyi güncellemek için bir fonksiyon ekleyebilirsiniz
+      fetchRestaurants(); 
     } catch (error) {
       console.error('Hata:', error);
       setMessage('Restoran silinemedi!');

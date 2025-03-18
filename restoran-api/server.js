@@ -8,6 +8,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+
 const mongoURI = process.env.MONGO_URI;
 console.log("MongoDB URI:", mongoURI);
 
@@ -26,18 +28,16 @@ const restaurantSchema = new mongoose.Schema({
   workingHours: String,
   time: String,
   location: String,
-  image: String, 
-    products: [
-        {
-         categoryname: String,
-        name: String,
-        description: String,
-        price: Number,
-     image: String,
-        }
-      ],
-
-
+  image: String,
+  products: [
+    {
+      categoryname: String,
+      name: String,
+      description: { type: String, required: false }, 
+      price: Number,
+      image: String,
+    },
+  ],
 });
 
 const Restaurant = mongoose.model('Restaurant', restaurantSchema);
@@ -69,7 +69,7 @@ app.post('/api/restaurants', async (req, res) => {
         time,
         location,
         image,
-        products, // Ürünleri restoranın içine dahil et
+        products, 
       });
   
       await newRestaurant.save();
@@ -99,23 +99,23 @@ app.get('/api/restaurants', async (req, res) => {
 app.delete('/api/restaurants/:_id', async (req, res) => {
   const { _id } = req.params;
 
-  // ID'nin geçerli bir ObjectId olup olmadığını kontrol et
   if (!mongoose.Types.ObjectId.isValid(_id)) {
     return res.status(400).json({ error: 'Geçersiz ID formatı' });
   }
 
   try {
-    const restaurant = await Restaurant.findByIdAndDelete(id);
+    const restaurant = await Restaurant.findByIdAndDelete(_id);  
     if (!restaurant) {
       return res.status(404).json({ error: "Restoran bulunamadı" });
     }
-    
+
     res.status(200).json({ message: "Restoran başarıyla silindi", restaurant });
   } catch (err) {
     console.error("Sunucu Hatası:", err);
     res.status(500).json({ error: "Restoran silinemedi", details: err.message });
   }
 });
+
 
 
 
